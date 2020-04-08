@@ -1,0 +1,22 @@
+version: '3.7'
+
+volumes:
+  angular-dist:
+
+services:
+  app:
+    image: kakadachheang/avid-covider:0.0.1
+    environment:
+      - LANG=C.UTF-8
+    volumes:
+      - angular-dist:/app/dist/avid-covider
+
+  nginx:
+    image: nginx:1.17.9
+    restart: unless-stopped
+    volumes:
+      - ./etc/nginx:/etc/nginx/conf.d
+      - angular-dist:/usr/share/nginx/html
+    ports:
+      - "80:80"
+    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
